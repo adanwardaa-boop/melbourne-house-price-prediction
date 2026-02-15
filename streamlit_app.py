@@ -21,18 +21,16 @@ if not os.path.exists(MODEL_PATH):
 # LOAD MODEL
 # -----------------------------
 
-model_info = joblib.load(MODEL_PATH)
+model = joblib.load(MODEL_PATH)
 
-model = model_info["model"]
-scaler = model_info["scaler"]
-columns = model_info["columns"]
+# Get feature names automatically
+columns = model.feature_names_in_
 
 # -----------------------------
 # STREAMLIT UI
 # -----------------------------
 
 st.set_page_config(page_title="Melbourne House Price Predictor")
-
 st.title("🏠 Melbourne House Price Prediction")
 
 st.sidebar.header("Input Features")
@@ -45,6 +43,5 @@ for col in columns:
 input_df = pd.DataFrame([input_data])
 
 if st.button("Predict Price"):
-    scaled = scaler.transform(input_df)
-    prediction = model.predict(scaled)
+    prediction = model.predict(input_df)
     st.success(f"Predicted Price: ${prediction[0]:,.2f}")
